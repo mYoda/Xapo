@@ -148,7 +148,7 @@ extension GitHubListView {
         /// 1.5
         static var animationDelay: CGFloat {
             #if DEBUG
-            return 0.5
+            return 0.8
             #else
             return 1.5
             #endif

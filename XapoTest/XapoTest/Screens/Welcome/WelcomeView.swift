@@ -10,8 +10,6 @@ import SwiftUI
 
 struct WelcomeView: View {
     
-    
-    @StateObject var viewModel = WelcomeViewModel()
     @State private var animationFinished: Bool = false
     @State private var startAnimation: Bool = false
     
@@ -36,10 +34,9 @@ struct WelcomeView: View {
                 .opacity(animationFinished ? 1 : 0)
         }
         .onAppear {
-            viewModel.animate()
             startAnimation = true
         }
-        .onReceive(viewModel.$animationFinished, perform: { value  in
+        .onChange(of: startAnimation, perform: { value  in
             if value {
                 delay(Theme.logoAnimationDuration) {
                     withAnimation {
@@ -63,7 +60,7 @@ struct WelcomeView: View {
                 .animation(Animation.timingCurve(0.01, 0.02, 0.5, 1.0, duration: Theme.logoAnimationDuration)
                             .repeatCount(1, autoreverses: false), value: startAnimation)
             
-            if viewModel.animationFinished {
+            if startAnimation {
                 VStack(spacing: Theme.mainContentSpacing) {
                     
                     Text(String.Welcome.title)
