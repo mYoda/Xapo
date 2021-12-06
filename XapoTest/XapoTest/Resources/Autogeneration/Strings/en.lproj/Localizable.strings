@@ -1,0 +1,107 @@
+    // MARK: - General
+"general.done" = "Done";
+"general.cancel" = "Cancel";
+"general.ok" = "Ok";
+"general.back" = "Back";
+"general.tapToBack" = "Tap to back";
+"general.send" = "Send";
+"general.skip" = "Skip";
+"general.error" = "Error";
+"general.close" = "Close";
+"general.no_data" = "No data";
+"general.fire" = "🔥🔥🔥";
+"general.coming_soon" = "\nComing Soon...\n";
+"general.version" = "Version";
+"general.add" = "Add";
+"general.save" = "Save";
+"general.save_to_gallery" = "Save to Gallery";
+"general.save_to_files" = "Save to Files";
+"general.continue" = "Continue";
+"general.allow" = "Allow";
+"general.yes" = "Yes";
+"general.no" = "No";
+"general.sorting" = "Sorting";
+"general.delete" = "Delete";
+"general.next" = "Next";
+"general.lets_go" = "Let’s Go!";
+"general.oops" = "Oops!";
+"general.remove" = "Remove";
+"general.share" = "Share";
+"general.thankyou" = "Thank you!";
+"general.warning" = "Warning";
+"general.tap_to_close" = "Tap to close";
+"general.clear" = "Clear";
+"general.update" = "Update";
+"general.change" = "Update";
+"general.edit" = "Edit";
+"general.finish" = "Finish";
+"general.retry" = "Retry";
+"general.search" = "Search";
+"general.replace" = "Replace";
+"general.favorite" = "Favorite";
+"general.verify" = "Verify";
+"general.use" = "Use";
+"general.create" = "Create";
+"general.search_placeholder" = "Search";
+"general.download" = "Download";
+"general.show" = "Show";
+"general.apply" = "Apply";
+"general.reset" = "Reset";
+"general.delete_changes" = "Delete Changes";
+"general.continue_editing" = "Continue Editing";
+"general.begin" = "Begin";
+"general.end" = "End";
+"general.select" = "Select";
+"general.select_all" = "Select all";
+"general.deselect_all" = "Deselect all";
+"general.show_all" = "Show all";
+"general.roll_up" = "Roll up";
+"general.accept" = "Accept";
+"general.decline" = "Decline";
+"general.submit" = "Submit";
+"general.okay" = "Okay";
+"general.review" = "Review";
+"general.show_more" = "Show more";
+"general.expand" = "Expand";
+"general.collapse" = "Collapse";
+"general.invite" = "Invite";
+"general.confirm" = "Confirm";
+"general.decline" = "Decline";
+"general.explore" = "Explore";
+"general.tip" = "Tip";
+"general.sign_in" = "Sign In";
+"general.sign_out" = "Sign Out";
+"general.see_all" = "See All";
+"general.actions" = "Actions";
+"general.select_file" = "Select File";
+
+
+//MARK: - Error messages
+"error.error" = "Error";
+"error.undefined_error" = "Unknown error";
+"error.something_went_wrong" = "Something went wrong. Please try again later";
+"error.api_rate_limit" = "API rate limit exceeded.\nWait a minute and try again";
+
+
+//MARK: - Welcome Screen
+"welcome.go_to_xapo" = "Go to Xapo";
+"welcome.title" = "Welcome to iOS Test";
+"welcome.info"  = "iOS Test for Xapo bank";
+"welcome.text_placeholder" = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.";
+"welcome.enter_te_app" = "Enter the app";
+"welcome.privacy" = "Privacy policy";
+"welcome.and" = " and ";
+"welcome.terms_of_use" = "Terms of use";
+"welcome.view_details" = "View Details";
+
+
+//MARK: - GitHub Screen
+"git_hub.title" = "GitHub";
+"git_hub.info" = "found Top-%d repositories";
+"git_hub.most_popular" = "Most popular repositories";
+"git_hub.more" = "More";
+
+
+//MARK: - Popups
+"popup.languages.title" = "Choose your love";
+

@@ -1,0 +1,35 @@
+# XapoTest
+#
+# Created by Anton Nechayuk ©
+# with 🧡 for Xapo in 2021
+#
+
+
+strings:
+    inputs:
+        Strings/en.lproj/Localizable.strings
+    outputs:
+        templatePath: Strings/StringsGenerationTemplate.stencil
+        output: Strings/Strings.swift
+        
+xcassets:
+  - inputs: Images/Images.xcassets
+    outputs:
+        templatePath: Images/ImagesGenerationTemplate.stencil
+        output: Images/Images.swift
+        
+# Since Swiftgen templates doesn't support markable comments - we'll use custom Swift-script. See: ColorsAssetsGenerator.swift
+#  - inputs:
+#      - Colors/Colors.xcassets
+#    outputs:
+#      - templatePath: Colors/ColorsGenerationTemplate.stencil
+#        output: Colors/Colors.swift
+
+fonts:
+  inputs:
+    Fonts/Assets
+  outputs:
+    templatePath: Fonts/FontsGenerationTemplate.stensil
+    output: Fonts/Fonts.swift
+    params:
+          printPlistInfo: true

@@ -1,0 +1,112 @@
+// swiftlint:disable all
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
+//
+// Template Created by Anton Nechayuk ©
+// with 🧡 for Xapo in 2021
+//
+
+
+{% if catalogs %}
+{% set enumName %}{{param.enumName|default:"Asset"}}{% endset %}
+{% set colorType %}{{param.colorTypeName|default:"ColorAsset"}}{% endset %}
+{% set dataType %}{{param.dataTypeName|default:"DataAsset"}}{% endset %}
+{% set imageType %}{{param.imageTypeName|default:"ImageAsset"}}{% endset %}
+{% set colorAlias %}{{param.colorAliasName|default:"AssetColorTypeAlias"}}{% endset %}
+{% set imageAlias %}{{param.imageAliasName|default:"AssetImageTypeAlias"}}{% endset %}
+{% set forceNamespaces %}{{param.forceProvidesNamespaces|default:"false"}}{% endset %}
+{% set accessModifier %}{% if param.publicAccess %}public {% else %}{% endif %}{% endset %}
+{% set spacing %}    {% endset %}
+{% set zeroSpacing %}{% endset %}
+#if os(OSX)
+  import AppKit.NSImage
+  {{accessModifier}} typealias {{imageAlias}} = NSImage
+#elseif os(iOS) || os(tvOS) || os(watchOS)
+  import SwiftUI
+  {{accessModifier}} typealias {{imageAlias}} = Image
+#endif
+
+{% macro enumBlock assets %}
+  {% call casesBlock assets zeroSpacing%}
+  {% if param.allValues %}
+
+  {{accessModifier}}static let allImages: [{{imageType}}] = [
+    {% filter indent:2 %}{% call allValuesBlock assets "image" "" %}{% endfilter %}
+  ]
+  {% endif %}
+{% endmacro %}
+{% macro casesBlock assets sp%}
+{% set space2 %}{{sp}}{{spacing}}{% endset %}
+  {% for asset in assets %}
+  {% if asset.type == "image" %}
+{{spacing}}{{sp}}{{accessModifier}}static let {{asset.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}} = {{imageType}}(name: "{{asset.value}}").image
+  {% elif asset.items and ( forceNamespaces == "true" or asset.isNamespaced == "true" ) %}
+{{space2}}{{accessModifier}}enum {{asset.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+    {% filter indent:2 %}{% call casesBlock asset.items space2%}{% endfilter %}
+{{space2}}}
+  {% elif asset.items %}
+{{space2}}{{accessModifier}}enum {{asset.name|swiftIdentifier:"pretty"}} {
+{% call casesBlock asset.items space2 %}
+{{space2}}}
+  {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro allValuesBlock assets filter prefix %}
+  {% for asset in assets %}
+  {% if asset.type == filter %}
+  {{prefix}}{{asset.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}},
+  {% elif asset.items and ( forceNamespaces == "true" or asset.isNamespaced == "true" ) %}
+  {% set prefix2 %}{{prefix}}{{asset.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.{% endset %}
+  {% call allValuesBlock asset.items filter prefix2 %}
+  {% elif asset.items %}
+  {% call allValuesBlock asset.items filter prefix %}
+  {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro allNames assets%}
+  {% for asset in assets %}
+  {% if asset.type == "image" %}
+{{spacing}}{{spacing}}"{{asset.value}}",
+  {% elif asset.items and ( forceNamespaces == "true" or asset.isNamespaced == "true" ) %}
+    {% filter indent:2 %}{% call allNames asset.items%}{% endfilter %}
+  {% elif asset.items %}
+{% call allNames asset.items%}
+  {% endif %}
+  {% endfor %}
+{% endmacro %}
+// MARK: - Catalog
+
+{{accessModifier}}enum Design {
+  {% if catalogs.count > 1 %}
+  {% for catalog in catalogs %}
+  {{accessModifier}}enum {{catalog.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+    {% filter indent:2 %}{% call enumBlock catalog.assets %}{% endfilter %}
+  }
+  {% endfor %}
+  {% else %}
+  {% call enumBlock catalogs.first.assets %}
+  {% endif %}
+}
+
+// MARK: - Implementation Details
+{{accessModifier}}struct {{imageType}} {
+  {{accessModifier}}fileprivate(set) var name: String
+
+  {{accessModifier}}var image: {{imageAlias}} {
+    let bundle = Bundle(for: BundleToken.self)
+    #if os(iOS) || os(tvOS)
+    let image = {{imageAlias}}(name, bundle: bundle)
+    #elseif os(OSX)
+    let image = bundle.image(forResource: NSImage.Name(name))
+    #elseif os(watchOS)
+    let image = {{imageAlias}}(name)
+    #endif
+    return image
+  }
+}
+
+private final class BundleToken {}
+{% else %}
+// No assets found
+{% endif %}

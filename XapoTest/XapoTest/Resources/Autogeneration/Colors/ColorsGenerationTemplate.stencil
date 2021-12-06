@@ -1,0 +1,100 @@
+// swiftlint:disable all
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
+//
+// Template Created by Anton Nechayuk ©
+// with 🧡 for Xapo in 2021
+//
+
+
+{% if catalogs %}
+{% set enumName %}{{param.enumName|default:"Asset"}}{% endset %}
+{% set colorType %}{{param.colorTypeName|default:"ColorAsset"}}{% endset %}
+{% set forceNamespaces %}{{param.forceProvidesNamespaces|default:"false"}}{% endset %}
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+
+import SwiftUI
+
+// swiftlint:disable superfluous_disable_command file_length implicit_return
+// MARK: - Asset Catalogs
+
+{% macro enumBlock assets type %}
+  {% call casesBlock assets type %}
+  {% if param.allValues %}
+
+  // swiftlint:disable trailing_comma
+  {% if resourceCount.color > 0 %}
+ static let allColors: [{{type}}] = [
+    {% filter indent:2 %}{% call allValuesBlock assets "color" "" %}{% endfilter %}
+  ]
+  {% endif %}
+  // swiftlint:enable trailing_comma
+  {% endif %}
+{% endmacro %}
+{% macro casesBlock assets type %}
+  {% for asset in assets %}
+  {% if asset.type == "color" %}
+  static let {{asset.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}} = {{type}}(name: "{{asset.value}}")
+  {% elif asset.items and ( forceNamespaces == "true" or asset.isNamespaced == "true" ) %}
+  {{accessModifier}} enum {{asset.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+    {% filter indent:2 %}{% call casesBlock asset.items type %}{% endfilter %}
+  }
+  {% elif asset.items %}
+  {% call casesBlock asset.items type %}
+  {% endif %}
+  {% endfor %}
+{% endmacro %}
+{% macro allValuesBlock assets filter prefix %}
+  {% for asset in assets %}
+  {% if asset.type == filter %}
+  {{prefix}}{{asset.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}},
+  {% elif asset.items and ( forceNamespaces == "true" or asset.isNamespaced == "true" ) %}
+  {% set prefix2 %}{{prefix}}{{asset.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.{% endset %}
+  {% call allValuesBlock asset.items filter prefix2 %}
+  {% elif asset.items %}
+  {% call allValuesBlock asset.items filter prefix %}
+  {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+// swiftlint:disable identifier_name line_length nesting type_body_length type_name
+{{accessModifier}} extension UIColor {
+  {% call enumBlock catalogs.first.assets "UIColor" %}
+}
+
+{{accessModifier}} extension Color {
+  {% call enumBlock catalogs.first.assets "Color" %}
+}
+// swiftlint:enable identifier_name line_length nesting type_body_length type_name
+
+// MARK: - Implementation Details
+{% if resourceCount.color > 0 %}
+fileprivate extension UIColor {
+    convenience init(name: String) {
+        self.init(named: name, in: bundle, compatibleWith: nil)!
+    }
+}
+
+fileprivate extension Color {
+    init(name: String) {
+        self.init(name, bundle: bundle)
+    }
+}
+{% endif %}
+
+{% if not param.bundle %}
+// swiftlint:disable convenience_type
+private let bundle = BundleToken.bundle
+private final class BundleToken {
+  static let bundle: Bundle = {
+    #if SWIFT_PACKAGE
+    return Bundle.module
+    #else
+    return Bundle(for: BundleToken.self)
+    #endif
+  }()
+}
+// swiftlint:enable convenience_type
+{% endif %}
+{% else %}
+// No assets found
+{% endif %}

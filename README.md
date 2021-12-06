@@ -1,8 +1,37 @@
 # Xapo iOS project
 
+## Requirements
+
+- Xcode 13.1
+- SwiftGen v6.4.0+
+
+## Setup instructions
+
+```
+$ brew update
+$ brew install swiftgen
+
+git clone git@github.com:ios-xapo-interviews/xapo-interview-mYoda.git
+cd xapo-interview-mYoda
+```
+open Xcode project
+build & run project in Simulator 🚀
+
+### Contacts:
+
+```Swift
+enum Author: String {
+    case name       = "Anton Nechayuk"
+    case telegram   = "@antechnic"
+    case email      = "nechayukanton@gmail.com"
+}
+```
+
+---
+
 This is a project used to evaluate candidate's coding skills and iOS knowledge.
 
-# Description
+# Task Description
 
 The project’s idea is to list trending projects from Github, tap on one of them, and show their details.
 The first screen of the app is described on this [Figma link](https://www.figma.com/file/5JrLNhD1etjj9FIfmpwe93/Untitled?node-id=0%3A1)
@@ -21,3 +50,5 @@ If there is something not specified, please be free to decide on it. Let me know
 # Handover
 
 Whenever you are done, just create a release in github or contact HR!
+
+---

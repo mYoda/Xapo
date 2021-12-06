@@ -1,0 +1,161 @@
+// swiftlint:disable all
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
+//
+// Template Created by Anton Nechayuk ©
+// with 🧡 for Xapo in 2021
+//
+
+
+{% if families %}
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% set fontType %}{{param.fontTypeName|default:"FontConvertible"}}{% endset %}
+#if os(OSX)
+import AppKit.NSFont
+#elseif os(iOS) || os(tvOS) || os(watchOS)
+import UIKit.UIFont
+#endif
+import SwiftUI
+
+// MARK: - Fonts
+
+/// To register Fonts use: FontRegistrator.registerAllCustomFonts() in AppDelegate
+/// Or add all them to the your Info.plist file
+
+{% macro transformPath path %}{% filter removeNewlines %}
+{% if param.preservePath %}
+{{path}}
+{% else %}
+{{path|basename}}
+{% endif %}
+{% endfilter %}{% endmacro %}
+{% for family in families %}
+
+// MARK: - {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}
+
+{{accessModifier}} enum {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+    
+    {% if param.printPlistInfo|default:false %}
+    /*
+     {% for font in family.fonts %}
+     <string>{% call transformPath font.path %}</string>
+     {% endfor %}
+     */
+    {% endif %}
+
+    enum FontStyle {
+        {% for font in family.fonts %}
+        case {{font.style|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}
+        {% endfor %}
+
+        var name: String {
+            switch self {
+                {% for font in family.fonts %}
+                case .{{font.style|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}: return "{{font.name}}"
+                {% endfor %}
+            }
+        }
+        
+        var path: String {
+            switch self {
+                {% for font in family.fonts %}
+                case .{{font.style|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}: return "{% call transformPath font.path %}"
+                {% endfor %}
+            }
+        }
+        
+        static var allCases: [FontStyle] {
+            return [{% for font in family.fonts %}{{"."}}{{font.style|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}{{ ", " if not forloop.last }}{% endfor %}]
+        }
+    }   
+}
+{% endfor %}
+    
+
+
+extension Font {
+    
+    {% for family in families %}
+    /// {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} Family
+    {{accessModifier}} static func {{family.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}(size: CGFloat, weight: {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.FontStyle) -> Font {
+        return getFont(name: weight.name, size: size)
+    }
+    {% endfor %}
+    
+
+    
+    
+    fileprivate static func getFont(name: String, size: CGFloat) -> Font {
+        return Font.custom(name, size: size)
+    }
+}
+
+extension UIFont {
+    
+    {% for family in families %}
+    /// {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} Family
+    {{accessModifier}} static func {{family.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}(size: CGFloat, weight: {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.FontStyle) -> UIFont {
+        return getFont(name: weight.name, size: size)
+    }
+    {% endfor %}
+
+    
+    fileprivate static func getFont(name: String, size: CGFloat) -> UIFont {
+        guard let font = UIFont(name: name, size: size)
+        else {
+            fatalError("⛑⛑⛑⛑⛑ \nERROR: UIFont with name: \(name) is not found! \n⛑⛑⛑⛑⛑")
+        }
+        return font
+    }
+}
+
+
+
+{{accessModifier}} enum FontRegistrator {
+    
+    {{accessModifier}} static func registerAllCustomFonts() {
+        {% for family in families %}
+        {{family.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}.FontStyle.allCases.forEach { FontRegistrator.register(path: $0.path) }{% endfor %}
+    }
+    
+    private static func register(path: String) {
+        guard let url = path.url else { return }
+        CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+    }
+}
+
+
+fileprivate extension String {
+    var url: URL? {
+        return {{param.bundle|default:"BundleToken.bundle"}}.url(forResource: self, withExtension: nil)
+    }
+}
+
+// MARK: - Implementation Details
+
+{% if not param.bundle and not param.lookupFunction %}
+
+private final class BundleToken {
+    static let bundle: Bundle = {
+        #if SWIFT_PACKAGE
+        return Bundle.module
+        #else
+        return Bundle(for: BundleToken.self)
+        #endif
+    }()
+}
+{% endif %}
+{% else %}
+// No fonts found
+{% endif %}
+
+
+extension UIFont {
+    public static func printAll() {
+        for family in UIFont.familyNames.sorted() {
+            print("Font family: \(family)")
+            for name in UIFont.fontNames(forFamilyName: family) {
+                print("- Font name: \(name)")
+            }
+        }
+    }
+}
